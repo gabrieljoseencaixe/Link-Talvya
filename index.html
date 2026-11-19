@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LinkTalvya</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+:root{--bg:#F5F4FA;--card:#fff;--ink:#0B0E2A;--mut:#5B6082;--line:#DCD8EE;--acc:#5B2FC9;--accT:#fff;--hot:#F2A900;--hotT:#241800;--bad:#B3261E;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#070817;--card:#10142E;--ink:#EEF0FF;--mut:#9AA0C8;--line:#242B5E;--acc:#A98BFF;--accT:#0B0A22;--bad:#FF8A80;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#070817;--card:#10142E;--ink:#EEF0FF;--mut:#9AA0C8;--line:#242B5E;--acc:#A98BFF;--accT:#0B0A22;--bad:#FF8A80;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;max-width:960px;margin:auto}
+.logo{font-weight:800;font-size:22px;letter-spacing:-.5px}.logo b{color:var(--acc)}
+nav{display:flex;gap:4px;overflow-x:auto;padding:0 14px 10px;max-width:960px;margin:auto;scrollbar-width:none}
+nav a{white-space:nowrap;padding:8px 14px;border-radius:99px;color:var(--mut);text-decoration:none;font-weight:600;font-size:14px}
+nav a.on{background:var(--ink);color:var(--bg)}
+main{max-width:960px;margin:auto;padding:8px 18px 60px}
+h1{font-size:28px;letter-spacing:-.8px;margin:8px 0 16px;font-weight:800}
+h2{font-size:17px;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.kpi b{display:block;font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1.1}.kpi span{color:var(--mut);font-size:13px}
+label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:var(--mut)}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.row{display:grid;gap:10px;grid-template-columns:1fr 1fr}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+button{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:10px;cursor:pointer}
+button.hot{background:linear-gradient(135deg,#1B2470,#6D3FD9);color:#fff;border-color:transparent;padding:12px 20px;font-weight:800;border-radius:12px}
+button.pri{background:var(--acc);color:var(--accT);border-color:var(--acc)}
+button.sm{padding:5px 10px;font-size:13px}
+.err{color:var(--bad);font-size:13px;margin-top:8px;min-height:18px}
+.link{border-top:1px solid var(--line);padding:12px 0}.link:first-child{border:0}
+.short{color:var(--acc);font-weight:800;word-break:break-all}.url{color:var(--mut);font-size:13px;word-break:break-all}
+.tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:99px;background:var(--bg);border:1px solid var(--line);margin-right:4px}
+.off{opacity:.55}.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.bars{display:flex;align-items:flex-end;gap:5px;height:130px}.bars i{flex:1;background:var(--acc);border-radius:4px 4px 0 0;min-height:3px;position:relative}
+.bars i em{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:10px;color:var(--mut);font-style:normal}
+.pb{height:8px;background:var(--bg);border-radius:9px;border:1px solid var(--line);overflow:hidden}.pb div{height:100%;background:var(--acc)}
+.plans{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.plan.cur{border:2px solid var(--acc)}.plan ul{padding-left:18px;color:var(--mut);margin:8px 0}
+.price{font-size:30px;font-weight:800}
+.qrbox{background:#fff;border-radius:12px;padding:10px;display:inline-block;max-width:100%}.qrbox svg{display:block;width:220px;max-width:100%;height:auto}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.s{opacity:1}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);max-width:440px;width:92%}
+dialog::backdrop{background:#0008}
+.bk{display:flex;justify-content:space-between;font-size:14px;padding:3px 0}
+footer{max-width:960px;margin:0 auto;padding:6px 18px calc(30px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center}footer a{display:flex;align-items:center;gap:10px;background:#070817;color:#B9BEE6;text-decoration:none;font-size:12px;padding:6px 14px 6px 8px;border-radius:12px;border:1px solid #242B5E}footer img{height:32px;width:auto;border-radius:6px}
+.bio{border-radius:18px;padding:26px 18px;text-align:center;max-width:340px;margin:0 auto 12px}.bio .av{width:64px;height:64px;border-radius:50%;margin:0 auto 8px;display:grid;place-items:center;font-weight:800;font-size:26px;background:rgba(128,128,200,.25)}.bio p{margin:2px 0 16px;opacity:.8;font-size:14px}.bio a{display:block;padding:13px;margin-top:10px;border-radius:12px;text-decoration:none;font-weight:600}
+.t-roxo{background:linear-gradient(160deg,#0B0E2A,#3A1F8F);color:#fff}.t-roxo a{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)}.t-marinho{background:#0B1240;color:#fff}.t-marinho a{background:#fff;color:#0B1240}.t-claro{background:#fff;color:#0B0E2A;border:1px solid #DCD8EE}.t-claro a{background:#5B2FC9;color:#fff}
+</style>
+</head>
+<body>
+<header><div class="logo">Link<b>Talvya</b></div><button class="sm" id="th" aria-label="Alternar tema">Tema</button></header>
+<nav id="nav"></nav>
+<main id="app"></main>
+<footer><a href="https://talvya.com.br/" target="_blank" rel="noopener" aria-label="Site da Talvya"><img alt="Talvya" src="data:image/webp;base64,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"><span>Uma solução Talvya</span></a></footer>
+<div id="toast"></div>
+<dialog id="dlg"></dialog>
+<script>
+const DOM="talvya.link",REDIR="qehdzsjzcvicwgbqdwog.supabase.co/functions/v1/redirect/";
+const R=[["dashboard","Painel"],["criar","Criar link"],["links","Meus links"],["qr","QR Code"],["whatsapp","WhatsApp"],["bio","Link na Bio"]];
+const DEV=["Celular","Celular","Computador","Tablet"],BR=["Chrome","Safari","Edge","Firefox"],SO=["Android","iOS","Windows","macOS"];
+let S={links:[]};
+try{S=JSON.parse(localStorage.getItem("tlk2")||"null")||seed()}catch(e){S=seed()}
+S.bio=S.bio||{handle:"",name:"",desc:"",theme:"roxo",items:[]};
+function save(){try{localStorage.setItem("tlk2",JSON.stringify(S))}catch(e){}}
+function ev(){const d=Math.floor(Math.random()*4);return{t:Date.now()-Math.random()*20*864e5,d:DEV[d],b:BR[Math.floor(Math.random()*4)],o:SO[d]}}
+function seed(){return{links:[]}}
+const $=(s,r=document)=>r.querySelector(s),short=l=>REDIR+l.slug,e=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(m){const t=$("#toast");t.textContent=m;t.className="s";setTimeout(()=>t.className="",1800)}
+function copy(t){try{navigator.clipboard.writeText(t).then(()=>toast("Link copiado"),()=>toast("Copie manualmente: "+t))}catch(x){toast("Copie manualmente: "+t)}}
+const alive=l=>l.on&&(!l.exp||new Date(l.exp+"T23:59:59")>=new Date());
+const slugOk=s=>/^[a-z0-9-]{3,30}$/.test(s);
+const days=n=>S.links.reduce((a,l)=>a+l.ev.filter(x=>x.t>Date.now()-n*864e5).length,0);
+const total=()=>S.links.reduce((a,l)=>a+l.ev.length,0);
+function newSlug(){let s;do{s=Math.random().toString(36).slice(2,8)}while(S.links.some(l=>l.slug===s));return s}
+function addLink(o){
+ try{const u=new URL(o.url);if(!/^https?:$/.test(u.protocol))throw 0}catch(x){return"Informe uma URL válida começando com http:// ou https://"}
+ if(/^https?:\/\/(localhost|127\.|0\.0\.0\.0)/.test(o.url)||o.url.includes(DOM))return"Este destino não é permitido (proteção contra abuso).";
+ if(o.slug){if(!slugOk(o.slug))return"Apelido: 3 a 30 caracteres, só letras minúsculas, números e hífen.";if(S.links.some(l=>l.slug===o.slug))return"Este apelido já está em uso."}
+ const s=o.slug||newSlug();S.links.unshift({id:s,name:o.name||s,url:o.url,slug:s,camp:o.camp,cat:o.cat,exp:o.exp,on:true,created:Date.now(),ev:[]});save();return s}
+const V={
+dashboard(){const top=[...S.links].sort((a,b)=>b.ev.length-a.ev.length).slice(0,3),cs={};S.links.forEach(l=>{if(l.camp)cs[l.camp]=(cs[l.camp]||0)+l.ev.length});
+ const ch=Array.from({length:14},(_,i)=>{const d=13-i,a=Date.now()-(d+1)*864e5,b=Date.now()-d*864e5;return[new Date(b).getDate(),S.links.reduce((x,l)=>x+l.ev.filter(v=>v.t>a&&v.t<=b).length,0)]}),mx=Math.max(1,...ch.map(c=>c[1]));
+ return`<h1>Painel</h1><button class="hot" onclick="go('criar')">+ Criar novo link</button><div style="height:14px"></div>
+ <div class="grid"><div class="card kpi"><b>${S.links.length}</b><span>Links criados</span></div><div class="card kpi"><b>${total()}</b><span>Cliques totais</span></div><div class="card kpi"><b>${days(7)}</b><span>Últimos 7 dias</span></div><div class="card kpi"><b>${days(30)}</b><span>Últimos 30 dias</span></div></div>
+ <div class="card"><h2>Cliques por dia</h2><div class="bars" style="margin-bottom:22px">${ch.map(c=>`<i style="height:${c[1]/mx*100}%" title="${c[1]}"><em>${c[0]}</em></i>`).join("")}</div></div>
+ <div class="card"><h2>Links mais acessados</h2>${top.map(l=>`<div class="bk"><span>${e(l.name)}</span><b>${l.ev.length}</b></div>`).join("")||"Crie seu primeiro link para ver o ranking."}</div>
+ <div class="card"><h2>Campanhas com melhor desempenho</h2>${Object.entries(cs).sort((a,b)=>b[1]-a[1]).map(c=>`<div class="bk"><span>${e(c[0])}</span><b>${c[1]}</b></div>`).join("")||"Associe links a campanhas para comparar resultados."}</div>`},
+criar(){return`<h1>Criar link</h1><div class="card"><label>URL de destino</label><input id="u" inputmode="url" placeholder="https://seusite.com.br/pagina">
+ <div class="row"><div><label>Nome de identificação</label><input id="n"></div><div><label>Apelido personalizado</label><input id="s" placeholder="ex.: promo-verao"></div></div>
+ <div class="row"><div><label>Campanha</label><input id="c"></div><div><label>Categoria</label><select id="g"><option value="">Sem categoria</option>${["Vendas","Promoções","Instagram","WhatsApp","Produtos","Atendimento"].map(x=>`<option>${x}</option>`).join("")}</select></div></div>
+ <label>Data de expiração (opcional)</label><input id="x" type="date"><div class="err" id="er"></div><button class="hot" id="go">Gerar link curto</button></div><div id="res"></div>`},
+links(){return`<h1>Meus links</h1><div class="card"><input id="q" placeholder="Pesquisar por nome, apelido ou campanha"><div class="row" style="margin-top:8px"><select id="f"><option value="">Todos os status</option><option value="a">Ativos</option><option value="i">Inativos ou expirados</option></select><select id="o"><option value="d">Mais recentes</option><option value="c">Mais cliques</option></select></div></div><div class="card" id="ls"></div>`},
+qr(){return`<h1>QR Code</h1><div class="card"><label>Link</label><select id="ql">${S.links.map(l=>`<option value="${l.id}">${e(l.name)} (${e(short(l))})</option>`).join("")}</select>
+ <div class="row"><div><label>Cor do código</label><input type="color" id="c1" value="#5B2FC9" style="height:44px;padding:3px"></div><div><label>Cor do fundo</label><input type="color" id="c2" value="#ffffff" style="height:44px;padding:3px"></div></div>
+ <div style="margin:14px 0" id="qv"></div><button class="pri" id="cs">Copiar SVG</button><p class="url">O QR Code aponta para o link curto: ao trocar o destino, o mesmo código continua valendo.</p></div>`},
+bio(){const b=S.bio;return`<h1>Link na Bio</h1><div class="card"><label>Endereço</label><input id="bh" value="${e(b.handle)}" placeholder="seu-nome"><div class="url">${DOM}/bio/${e(b.handle||"seu-nome")}</div>
+<label>Nome</label><input id="bn" value="${e(b.name)}"><label>Descrição</label><input id="bs" value="${e(b.desc)}"><label>Tema</label><select id="bt">${[["roxo","Roxo Talvya"],["marinho","Azul-marinho"],["claro","Claro"]].map(t=>`<option value="${t[0]}" ${b.theme==t[0]?"selected":""}>${t[1]}</option>`).join("")}</select></div>
+<div class="card"><h2>Botões</h2><div id="bi"></div><div class="row"><input id="il" placeholder="Texto do botão"><input id="iu" inputmode="url" placeholder="https://..."></div><div class="err" id="er"></div><button class="pri" id="ia">Adicionar botão</button></div>
+<div class="card"><h2>Pré-visualização</h2><div id="bp"></div><div class="acts"><button class="pri" id="bc">Copiar link da bio</button></div></div>`},
+whatsapp(){return`<h1>Link para WhatsApp</h1><div class="card"><div class="row"><div><label>País</label><input id="p" value="55" inputmode="numeric"></div><div><label>DDD</label><input id="d" inputmode="numeric" maxlength="2" placeholder="11"></div></div><label>Telefone</label><input id="t" inputmode="numeric" placeholder="999990000"><label>Mensagem pré-configurada</label><textarea id="m" rows="3">Olá! Vim pelo seu link e gostaria de mais informações.</textarea><div class="err" id="er"></div><button class="hot" id="wg">Gerar link rastreável</button></div><div id="res"></div>`},
+};
+function resCard(l){return`<div class="card"><div class="short">${e(short(l))}</div><div class="url">${e(l.url)}</div><div class="acts"><button class="sm pri" onclick="copy('https://${short(l)}')">Copiar link</button><button class="sm" onclick="shareL('${l.id}')">Compartilhar</button><button class="sm" onclick="go('qr')">Gerar QR Code</button></div></div>`}
+function shareL(id){const l=S.links.find(x=>x.id==id),u="https://"+short(l);if(navigator.share)navigator.share({url:u}).catch(()=>{});else copy(u)}
+function stats(id){const l=S.links.find(x=>x.id==id),g=k=>{const m={};l.ev.forEach(x=>m[x[k]]=(m[x[k]]||0)+1);return Object.entries(m).sort((a,b)=>b[1]-a[1]).map(c=>`<div class="bk"><span>${c[0]}</span><b>${c[1]}</b></div>`).join("")||"<div class=url>Sem dados ainda</div>"};
+ const d=$("#dlg");d.innerHTML=`<h2>${e(l.name)}</h2><div class="grid"><div class="kpi"><b>${l.ev.length}</b><span>Cliques</span></div><div class="kpi"><b>${new Set(l.ev.map(x=>x.v)).size}</b><span>Únicos (estimado, 90 dias)</span></div></div><h2 style="margin-top:14px">Dispositivos</h2>${g("d")}<h2 style="margin-top:10px">Navegadores</h2>${g("b")}<h2 style="margin-top:10px">Sistemas</h2>${g("o")}<p class="url">Bots filtrados e IP anonimizado (LGPD). Últimos 90 dias.</p><button onclick="this.closest('dialog').close()">Fechar</button>`;d.showModal()}
+function edit(id){const l=S.links.find(x=>x.id==id),d=$("#dlg");d.innerHTML=`<h2>Editar link</h2><label>URL de destino</label><input id="eu" value="${e(l.url)}"><label>Nome</label><input id="en" value="${e(l.name)}"><div class="url">O endereço curto ${e(short(l))} não muda.</div><div class="err" id="ee"></div><div class="acts"><button class="pri" id="esv">Salvar</button><button onclick="this.closest('dialog').close()">Cancelar</button></div>`;d.showModal();
+ $("#esv").onclick=()=>{try{const u=new URL($("#eu").value);if(!/^https?:$/.test(u.protocol))throw 0}catch(x){$("#ee").textContent="Informe uma URL válida.";return}const nu=$("#eu").value,nn=$("#en").value||l.slug;dbUpd(l,{destination_url:nu,name:nn}).then(ok=>{if(ok){l.url=nu;l.name=nn;d.close();render();toast("Link atualizado")}})}}
+function listL(){const q=$("#q").value.toLowerCase(),f=$("#f").value,o=$("#o").value;let a=S.links.filter(l=>(l.name+l.slug+l.camp).toLowerCase().includes(q)&&(!f||(f=="a")==alive(l)));a.sort((x,y)=>o=="c"?y.ev.length-x.ev.length:y.created-x.created);
+ $("#ls").innerHTML=a.map(l=>`<div class="link ${alive(l)?"":"off"}"><div class="short">${e(short(l))}</div><div>${e(l.name)}</div><div class="url">${e(l.url)}</div><div style="margin-top:6px"><span class="tag">${l.ev.length} cliques</span><span class="tag">${alive(l)?"Ativo":"Inativo"}</span>${l.camp?`<span class="tag">${e(l.camp)}</span>`:""}${l.cat?`<span class="tag">${e(l.cat)}</span>`:""}</div>
+ <div class="acts"><button class="sm" onclick="copy('https://${short(l)}')">Copiar</button><button class="sm" onclick="stats('${l.id}')">Estatísticas</button><button class="sm" onclick="edit('${l.id}')">Editar</button><button class="sm" onclick="tog('${l.id}')">${l.on?"Desativar":"Ativar"}</button><button class="sm" onclick="tst('${l.id}')">Abrir link</button></div></div>`).join("")||"Nenhum link encontrado."}
+function tog(id){const l=S.links.find(x=>x.id==id);l.on=!l.on;save();listL()}
+function tst(id){const l=S.links.find(x=>x.id==id);if(!alive(l)){toast("Link inativo ou expirado: não redireciona");return}l.ev.push({...ev(),t:Date.now()});save();listL();toast("Clique registrado. Destino: "+l.url)}
+function bind(r){
+ if(r=="criar"){$("#go").onclick=()=>{const s=addLink({url:$("#u").value.trim(),name:$("#n").value.trim(),slug:$("#s").value.trim().toLowerCase(),camp:$("#c").value.trim(),cat:$("#g").value,exp:$("#x").value});
+  if(s.includes(" ")||s.length>30&&s.includes(".")){$("#er").textContent=s;return}$("#er").textContent="";$("#res").innerHTML=resCard(S.links.find(l=>l.slug==s))}}
+ if(r=="links"){["q","f","o"].forEach(i=>$("#"+i).oninput=listL);listL()}
+ if(r=="qr"){const up=()=>{const l=S.links.find(x=>x.id==$("#ql").value);if(!l){$("#qv").textContent="Crie um link primeiro.";return}const q=qrcode(0,"M");q.addData("https://"+short(l));q.make();const n=q.getModuleCount(),c1=$("#c1").value,c2=$("#c2").value;let p="";for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(q.isDark(y,x))p+=`M${x+2} ${y+2}h1v1h-1z`;
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+4} ${n+4}" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="${c2}"/><path d="${p}" fill="${c1}"/></svg>`;$("#qv").innerHTML=`<div class="qrbox">${svg}</div>`;$("#cs").onclick=()=>copy(svg)};
+  ["ql","c1","c2"].forEach(i=>$("#"+i).oninput=up);up()}
+ if(r=="bio"){const b=S.bio;window.bioRef=()=>{$("#bi").innerHTML=b.items.map((x,i)=>`<div class="bk"><span>${e(x.label)} <span class="url">(${x.clicks} cliques)</span></span><span><button class="sm" onclick="bioMove(${i},-1)">↑</button> <button class="sm" onclick="bioMove(${i},1)">↓</button> <button class="sm" onclick="bioDel(${i})">Remover</button></span></div>`).join("")||'<div class="url">Nenhum botão ainda.</div>';
+ $("#bp").innerHTML=`<div class="bio t-${b.theme}"><div class="av">${e((b.name||"L")[0].toUpperCase())}</div><b>${e(b.name||"Seu nome")}</b><p>${e(b.desc||"Sua descrição")}</p>${b.items.map((x,i)=>`<a href="${e(x.url)}" target="_blank" rel="noopener" onclick="bioClk(${i})">${e(x.label)}</a>`).join("")}</div>`};
+ $("#bh").oninput=ev=>{b.handle=ev.target.value=ev.target.value.toLowerCase().replace(/[^a-z0-9-]/g,"");save()};
+ $("#bn").oninput=ev=>{b.name=ev.target.value;save();bioRef()};$("#bs").oninput=ev=>{b.desc=ev.target.value;save();bioRef()};$("#bt").oninput=ev=>{b.theme=ev.target.value;save();bioRef()};
+ $("#ia").onclick=()=>{const l=$("#il").value.trim(),u=$("#iu").value.trim();try{if(!l)throw 0;if(!/^https?:$/.test(new URL(u).protocol))throw 0}catch(x){$("#er").textContent="Informe o texto do botão e uma URL válida com http:// ou https://";return}$("#er").textContent="";b.items.push({label:l,url:u,clicks:0});$("#il").value=$("#iu").value="";save();bioRef()};
+ $("#bc").onclick=()=>{if(b.handle.length<3){toast("Defina um endereço com 3 ou mais caracteres");return}copy("https://"+DOM+"/bio/"+b.handle)};bioRef()}
+ if(r=="whatsapp"){$("#wg").onclick=()=>{const n=($("#p").value+$("#d").value+$("#t").value).replace(/\D/g,"");if($("#d").value.length!=2||$("#t").value.replace(/\D/g,"").length<8){$("#er").textContent="Informe DDD com 2 dígitos e um telefone válido.";return}
+  const u="https://wa.me/"+n+"?text="+encodeURIComponent($("#m").value),s=addLink({url:u,name:"WhatsApp "+n,slug:"",camp:"",cat:"WhatsApp",exp:""});if(s.includes(" ")){$("#er").textContent=s;return}$("#er").textContent="";$("#res").innerHTML=resCard(S.links.find(l=>l.slug==s))+`<div class="card"><h2>Testar</h2><div class="acts"><button class="hot" onclick="waOpen('${s}')">Abrir no WhatsApp</button><button class="sm" onclick="waCopy('${s}')">Copiar link direto (wa.me)</button></div></div>`}}}
+function bioMove(i,d){const a=S.bio.items,j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];save();bioRef()}
+function bioDel(i){S.bio.items.splice(i,1);save();bioRef()}
+function bioClk(i){S.bio.items[i].clicks++;save();bioRef()}
+function waOpen(id){const l=S.links.find(x=>x.id==id);if(!l)return;l.ev.push({...ev(),t:Date.now()});save();window.open(l.url,"_blank","noopener")}
+function waCopy(id){const l=S.links.find(x=>x.id==id);if(l)copy(l.url)}
+function go(r){location.hash=r}
+function render(){const r=(location.hash||"#dashboard").slice(1),k=V[r]?r:"dashboard";$("#nav").innerHTML=R.map(x=>`<a href="#${x[0]}" class="${x[0]==k?"on":""}">${x[1]}</a>`).join("");$("#app").innerHTML=V[k]();bind(k);scrollTo(0,0)}
+addEventListener("hashchange",()=>render());
+$("#th").onclick=()=>{const r=document.documentElement,d=r.dataset.theme=="dark"||(!r.dataset.theme&&matchMedia("(prefers-color-scheme:dark)").matches);r.dataset.theme=d?"light":"dark"};
+</script>
+<script>
+const SB=supabase.createClient("https://qehdzsjzcvicwgbqdwog.supabase.co","sb_publishable_fX5GCTnUHV1YKCRMVEIbDg_Z44iX011");let SES=null;
+const NOSP=m=>/Invalid login/i.test(m)?"E-mail ou senha incorretos.":/already registered/i.test(m)?"Este e-mail já tem cadastro. Use Entrar.":/Email not confirmed/i.test(m)?"Confirme seu e-mail antes de entrar.":m;
+async function load(){
+ const a=await SB.from("links").select("id,name,destination_url,slug,expires_at,active,created_at,campaigns(name),categories(name)").order("created_at",{ascending:false});
+ if(a.error){toast("Erro ao carregar: "+a.error.message);return}
+ const c=await SB.from("click_events").select("link_id,clicked_at,device,browser,os,visitor_hash").eq("is_bot",false).gte("clicked_at",new Date(Date.now()-90*864e5).toISOString()).order("clicked_at",{ascending:false}).limit(10000),m={};
+ (c.data||[]).forEach(x=>(m[x.link_id]=m[x.link_id]||[]).push({t:new Date(x.clicked_at).getTime(),d:x.device,b:x.browser,o:x.os,v:x.visitor_hash}));
+ S.links=a.data.map(l=>({id:l.id,name:l.name,url:l.destination_url,slug:l.slug,camp:l.campaigns?l.campaigns.name:"",cat:l.categories?l.categories.name:"",exp:l.expires_at?l.expires_at.slice(0,10):"",on:l.active,created:new Date(l.created_at).getTime(),ev:m[l.id]||[]}))}
+async function dbUpd(l,p){const r=await SB.from("links").update(p).eq("id",l.id);if(r.error)toast("Erro: "+r.error.message);return!r.error}
+async function addLinkDb(o){
+ try{if(!/^https?:$/.test(new URL(o.url).protocol))throw 0}catch(x){return"Informe uma URL válida começando com http:// ou https://"}
+ if(/^https?:\/\/(localhost|127\.|0\.0\.0\.0)/.test(o.url)||o.url.includes("supabase.co/functions")||o.url.includes(DOM))return"Este destino não é permitido (proteção contra abuso).";
+ if(o.slug&&!slugOk(o.slug))return"Apelido: 3 a 30 caracteres, só letras minúsculas, números e hífen.";
+ const w=await SB.from("workspace_members").select("workspace_id").limit(1).maybeSingle();if(!w.data)return"Não foi possível localizar sua empresa. Saia e entre novamente.";
+ const ws=w.data.workspace_id,ens=async(t,n)=>{if(!n)return null;const q=await SB.from(t).select("id").eq("name",n).maybeSingle();if(q.data)return q.data.id;const i=await SB.from(t).insert({workspace_id:ws,name:n}).select("id").single();return i.data?i.data.id:null};
+ const slug=o.slug||newSlug(),r=await SB.from("links").insert({workspace_id:ws,created_by:SES.user.id,name:o.name||slug,destination_url:o.url,slug,campaign_id:await ens("campaigns",o.camp),category_id:await ens("categories",o.cat),expires_at:o.exp?o.exp+"T23:59:59-03:00":null});
+ if(r.error)return r.error.code=="23505"?"Este apelido já está em uso.":"Erro ao salvar: "+r.error.message;
+ await load();return slug}
+function tog(id){const l=S.links.find(x=>x.id==id);dbUpd(l,{active:!l.on}).then(ok=>{if(ok){l.on=!l.on;listL()}})}
+function tst(id){const l=S.links.find(x=>x.id==id);if(!alive(l)){toast("Link inativo ou expirado: não redireciona");return}window.open("https://"+short(l),"_blank","noopener");setTimeout(async()=>{await load();if($("#ls"))listL()},3500)}
+function waOpen(id){const l=S.links.find(x=>x.id==id);if(l)window.open("https://"+short(l),"_blank","noopener")}
+const _bind=bind;bind=function(r){_bind(r);
+ if(r=="criar")$("#go").onclick=async()=>{const b=$("#go");b.disabled=true;const s=await addLinkDb({url:$("#u").value.trim(),name:$("#n").value.trim(),slug:$("#s").value.trim().toLowerCase(),camp:$("#c").value.trim(),cat:$("#g").value,exp:$("#x").value});b.disabled=false;if(s.includes(" ")){$("#er").textContent=s;return}$("#er").textContent="";$("#res").innerHTML=resCard(S.links.find(l=>l.slug==s))};
+ if(r=="whatsapp")$("#wg").onclick=async()=>{const n=($("#p").value+$("#d").value+$("#t").value).replace(/\D/g,"");if($("#d").value.length!=2||$("#t").value.replace(/\D/g,"").length<8){$("#er").textContent="Informe DDD com 2 dígitos e um telefone válido.";return}
+  const s=await addLinkDb({url:"https://wa.me/"+n+"?text="+encodeURIComponent($("#m").value),name:"WhatsApp "+n,slug:"",camp:"",cat:"WhatsApp",exp:""});if(s.includes(" ")){$("#er").textContent=s;return}$("#er").textContent="";
+  $("#res").innerHTML=resCard(S.links.find(l=>l.slug==s))+`<div class="card"><div class="acts"><button class="hot" onclick="waOpen('${S.links.find(l=>l.slug==s).id}')">Abrir link rastreável</button></div></div>`}};
+function showAuth(){$("#nav").innerHTML="";if($("#so"))$("#so").style.display="none";
+ $("#app").innerHTML=`<h1>Entrar</h1><div class="card"><label>E-mail</label><input id="ae" type="email" autocomplete="email"><label>Senha</label><input id="ap" type="password" autocomplete="current-password"><div id="ax" style="display:none"><label>Seu nome</label><input id="an"><label>Empresa</label><input id="ac"></div><div class="err" id="er"></div><div class="acts"><button class="hot" id="ai">Entrar</button><button id="as">Criar conta</button></div><p class="url"><a href="#" id="af" style="color:var(--acc)">Esqueci minha senha</a></p></div>`;
+ const err=m=>$("#er").textContent=NOSP(m);
+ $("#ai").onclick=async()=>{const r=await SB.auth.signInWithPassword({email:$("#ae").value.trim(),password:$("#ap").value});if(r.error)return err(r.error.message);boot()};
+ $("#as").onclick=async()=>{if($("#ax").style.display=="none"){$("#ax").style.display="block";$("#er").textContent="Preencha nome e empresa e toque em Criar conta.";return}
+  if($("#ap").value.length<8)return err("A senha precisa ter 8 ou mais caracteres.");
+  const r=await SB.auth.signUp({email:$("#ae").value.trim(),password:$("#ap").value,options:{data:{full_name:$("#an").value.trim(),company:$("#ac").value.trim()||"Minha empresa"}}});
+  if(r.error)return err(r.error.message);if(!r.data.session){$("#er").textContent="Conta criada. Confirme seu e-mail e depois entre.";return}boot()};
+ $("#af").onclick=async ev=>{ev.preventDefault();const m=$("#ae").value.trim();if(!m)return err("Digite seu e-mail acima.");const r=await SB.auth.resetPasswordForEmail(m,{redirectTo:location.href.split("#")[0]});$("#er").textContent=r.error?r.error.message:"Enviamos um e-mail para redefinir a senha."}}
+const _r=render;render=function(){if(!SES){showAuth();return}if(!$("#so")){const b=document.createElement("button");b.id="so";b.className="sm";b.textContent="Sair";b.style.marginRight="8px";b.onclick=async()=>{await SB.auth.signOut();SES=null;S.links=[];showAuth()};$("#th").before(b)}$("#so").style.display="";_r()};
+async function boot(){const g=await SB.auth.getSession();SES=g.data.session;if(!SES){showAuth();return}await load();render()}
+SB.auth.onAuthStateChange(async(ev)=>{if(ev=="PASSWORD_RECOVERY"){const p=prompt("Digite sua nova senha (mínimo 8 caracteres):");if(p&&p.length>=8){const r=await SB.auth.updateUser({password:p});toast(r.error?r.error.message:"Senha atualizada");boot()}}});
+boot();
+</script>
+</body>
+</html>
